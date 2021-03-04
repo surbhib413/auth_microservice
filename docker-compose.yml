@@ -1,0 +1,52 @@
+version: "3.5"
+
+services:
+  dd-postgres:
+    container_name: ddpostgres
+    image: postgres:11.3-alpine
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_DB=fabdb
+      - POSTGRES_USER=fab
+      - POSTGRES_PASSWORD=fab
+    # volumes:
+    #   - ./postgres:/var/lib/postgresql
+    #   - ./postgres/data:/var/lib/postgresql/data
+
+  dd-pgadmin:
+    container_name: ddpgadmin
+    expose:
+      - 8080
+    ports:
+      - "8080:80"
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=cthakre@deloitte.com
+      - PGADMIN_DEFAULT_PASSWORD=fab
+    networks:
+      - sonarnet
+    depends_on:
+      - dd-postgres
+
+  webapp:
+    image: registry.gitlab.com/ssanushka/fab_server:latest
+    container_name: fab_server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - sonarnet
+    ports:
+      - "2000:2000"
+      - "465:465"
+    depends_on:
+      - dd-postgres
+
+networks:
+  sonarnet:
+    driver: bridge

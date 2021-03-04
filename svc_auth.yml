@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  namespace: fab-ns
+  labels:
+    app: auth-lb-svc
+spec:
+  ports:
+  - name: nodejs
+    port: 2000
+    targetPort: 2000
+  - name: grpc
+    port: 50051
+    targetPort: 50051
+  selector:
+    app: auth-pod
+  type: NodePort

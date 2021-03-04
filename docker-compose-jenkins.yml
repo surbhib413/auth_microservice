@@ -1,0 +1,16 @@
+version: "3.5"
+
+services:
+  dd-jenkings:
+    container_name: ddjenkins
+    build:
+      context: .
+      dockerfile: JenkinsDockerFile
+    expose:
+      - 9090
+      - 50000
+    ports:
+      - "9090:8080"
+      - "50000:50000"
+    volumes:
+      - ./jenkins:/var/jenkins_home
